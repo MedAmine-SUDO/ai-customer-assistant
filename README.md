@@ -371,7 +371,7 @@ The mock LLM passed every test; these only showed up against Gemini's real API.
 - [x] n8n workflow: team e-mail, 24-hour follow-up, WhatsApp link
 - [x] OpenAI or Gemini, with cost measured per answer
 - [ ] WhatsApp number live on the demo (Meta test number)
-- [ ] Google Sheet connected on the live demo
+- [x] Google Sheet connected on the live demo
 - [x] Live demo on Vercel + Neon (Frankfurt)
 - [ ] 60-second video: question → lead in the sheet → team alerted
 

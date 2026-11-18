@@ -115,6 +115,17 @@ def _ensure_tab(client: httpx.Client, headers: dict, tab: str) -> None:
     _ready_tabs.add(tab)
 
 
+def cell(value):
+    """USER_ENTERED turns numbers and dates into real values, but would also run text starting
+    with = + - @ as a formula: "+216 22 ••• 678" (#ERROR!), or a visitor's "=IMPORTXML(...)".
+    A leading apostrophe keeps such text as text."""
+    if value is None:
+        return ""
+    if isinstance(value, str) and value[:1] in ("=", "+", "-", "@"):
+        return "'" + value
+    return value
+
+
 def append_row(tab: str, row: list) -> bool:
     if not enabled():
         return False
@@ -125,7 +136,7 @@ def append_row(tab: str, row: list) -> bool:
             client.post(
                 f"{API}/{settings.google_sheet_id}/values/{quote(tab)}!A1:append",
                 params={"valueInputOption": "USER_ENTERED", "insertDataOption": "INSERT_ROWS"},
-                json={"values": [["" if v is None else v for v in row]]},
+                json={"values": [[cell(v) for v in row]]},
                 headers=headers,
             ).raise_for_status()
         return True

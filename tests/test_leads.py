@@ -119,3 +119,20 @@ def test_followup_is_written_in_the_leads_language(db):
     )
     text = followup_text(lead)
     assert "سامي" not in text and "Sami" in text and "دار الزيتونة" in text
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("+216 22 ••• 678", "'+216 22 ••• 678"),
+        ('=IMPORTXML("http://x", "//a")', '\'=IMPORTXML("http://x", "//a")'),
+        ("-5", "'-5"),
+        ("Ines Trabelsi", "Ines Trabelsi"),
+        (1234.5, 1234.5),
+        (None, ""),
+    ],
+)
+def test_sheet_cells_never_run_as_formulas(value, expected):
+    from app.services.sheets import cell
+
+    assert cell(value) == expected
