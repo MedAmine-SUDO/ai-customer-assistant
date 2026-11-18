@@ -49,6 +49,12 @@ workflow follows up 24 hours later.
 Both businesses are fictional. Visitors' conversations are deleted after 48 hours, and phone numbers are
 masked on the public demo, but please use made-up details anyway.
 
+> [!NOTE]
+> **The live demo runs on a free model, for testing only** (Gemini Flash-Lite on Google's free tier), so
+> answers can take a few extra seconds at busy hours. A real deployment uses a paid model: faster, smarter,
+> no quotas, and the business's conversations aren't used to train Google's models. Switching is one
+> setting (`LLM_PROVIDER` / `CHAT_MODEL`).
+
 <br/>
 
 ## ✨ What it does

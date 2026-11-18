@@ -28,6 +28,7 @@
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 36px 0 0; }
   .stat { border: 1px solid var(--line); border-radius: 16px; padding: 18px; text-align: left; background: #fff; }
   .stat b { display: block; font-size: 26px; letter-spacing: -.02em; }
+  .model-note { margin: 18px auto 0; max-width: 760px; font-size: 14px; color: var(--muted, #6b7280); }
   .stat span { color: var(--muted); font-size: 13px; }
   section { padding: 56px 0; }
   h2 { font-size: 30px; letter-spacing: -.02em; margin-bottom: 8px; }
@@ -97,6 +98,9 @@
       <div class="stat"><b id="s-conv">–</b><span>conversations mesurées</span></div>
       <div class="stat"><b>3</b><span>langues : FR · EN · العربية</span></div>
     </div>
+    <p class="model-note" id="free-note" hidden>🧪 Cette démo tourne sur un modèle gratuit, juste pour les tests : les réponses
+      peuvent prendre quelques secondes de plus aux heures chargées. Pour un vrai client, on passe sur un modèle
+      payant, plus rapide et plus intelligent.</p>
   </header>
 </div>
 
@@ -173,9 +177,9 @@
         <br>
         <div class="big" id="c-big">–<small> TND</small></div>
         <p>pour 1 000 conversations, l'activité d'un mois pour beaucoup de PME</p>
-        <p id="c-free" hidden>Cette démo tourne sur l'offre gratuite de Gemini : aujourd'hui elle ne coûte rien.
-          Les chiffres sont ceux du tarif payant, celui d'un client en production (sans quota, et ses
-          conversations ne servent pas à entraîner les modèles de Google).</p>
+        <p id="c-free" hidden>Cette démo tourne sur l'offre gratuite de Gemini, pour les tests : aujourd'hui elle ne
+          coûte rien. Les chiffres sont ceux du tarif payant, celui d'un client en production : un modèle plus rapide
+          et plus intelligent, sans quota, et ses conversations ne servent pas à entraîner les modèles de Google.</p>
       </div>
       <ul id="c-detail">
         <li><span>Modèle</span><b id="c-model">–</b></li>
@@ -208,6 +212,7 @@
     document.getElementById("c-big").firstChild.textContent = has ? "~" + fmt(s.cost_per_1000_conversations_tnd, 1) : "–";
     document.getElementById("c-model").textContent = s.model;
     document.getElementById("c-free").hidden = !s.free_tier;
+    document.getElementById("free-note").hidden = !s.free_tier;
     document.getElementById("c-conv").textContent = has ? fmt(s.avg_cost_per_conversation_usd, 4) + " $" : "–";
     document.getElementById("c-usd").textContent = has ? fmt(s.cost_per_1000_conversations_usd) + " $" : "–";
     document.getElementById("c-n").textContent = s.conversations_measured;
