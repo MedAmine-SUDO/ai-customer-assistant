@@ -11,9 +11,9 @@ workflow follows up 24 hours later.
 
 <br/>
 
-[![Open the live demo](https://img.shields.io/badge/Open_the_live_demo-→-111827?style=for-the-badge)](https://ai-customer-assistant.vercel.app/)
+[![Open the live demo](https://img.shields.io/badge/Open_the_live_demo-→-111827?style=for-the-badge)](https://ai-customer-assistant-demo.vercel.app/)
 &nbsp;
-[![Swagger docs](https://img.shields.io/badge/Swagger_docs-/docs-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://ai-customer-assistant.vercel.app/docs)
+[![Swagger docs](https://img.shields.io/badge/Swagger_docs-/docs-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://ai-customer-assistant-demo.vercel.app/docs)
 &nbsp;
 [![CI](https://img.shields.io/github/actions/workflow/status/MedAmine-SUDO/ai-customer-assistant/ci.yml?branch=main&style=for-the-badge&label=tests)](https://github.com/MedAmine-SUDO/ai-customer-assistant/actions/workflows/ci.yml)
 
@@ -40,11 +40,11 @@ workflow follows up 24 hours later.
 
 | | |
 | --- | --- |
-| 🦷 **Dental clinic, Sousse** | [/demo/dentiste](https://ai-customer-assistant.vercel.app/demo/dentiste): ask *« Combien coûte un détartrage ? »*, then book an appointment |
-| 🛋️ **Furniture shop** | [/demo/meubles](https://ai-customer-assistant.vercel.app/demo/meubles): ask *« 9adech salon Carthage ? »* or for a made-to-measure kitchen quote |
-| 📋 **Team dashboard** | [/admin](https://ai-customer-assistant.vercel.app/admin), password `demo1234`: leads, conversations to take over, documents, invoice PDFs |
-| 💬 **WhatsApp** | the same assistant on a WhatsApp number (links on the [demo page](https://ai-customer-assistant.vercel.app/)) |
-| 📖 **API** | [/docs](https://ai-customer-assistant.vercel.app/docs) |
+| 🦷 **Dental clinic, Sousse** | [/demo/dentiste](https://ai-customer-assistant-demo.vercel.app/demo/dentiste): ask *« Combien coûte un détartrage ? »*, then book an appointment |
+| 🛋️ **Furniture shop** | [/demo/meubles](https://ai-customer-assistant-demo.vercel.app/demo/meubles): ask *« 9adech salon Carthage ? »* or for a made-to-measure kitchen quote |
+| 📋 **Team dashboard** | [/admin](https://ai-customer-assistant-demo.vercel.app/admin), password `demo1234`: leads, conversations to take over, documents, invoice PDFs |
+| 💬 **WhatsApp** | the same assistant on a WhatsApp number (links on the [demo page](https://ai-customer-assistant-demo.vercel.app/)) |
+| 📖 **API** | [/docs](https://ai-customer-assistant-demo.vercel.app/docs) |
 
 Both businesses are fictional. Visitors' conversations are deleted after 48 hours, and phone numbers are
 masked on the public demo, but please use made-up details anyway.
@@ -115,7 +115,7 @@ Clients ask this first, so the app measures it: every answer stores the tokens i
 (prices are settings in [`.env.example`](.env.example), to keep in line with
 [OpenAI's](https://developers.openai.com/api/docs/pricing) or
 [Google's](https://aistudio.google.com/docs/pricing) pricing). The live figure is on the
-[demo page](https://ai-customer-assistant.vercel.app/#cout) and in the dashboard.
+[demo page](https://ai-customer-assistant-demo.vercel.app/#cout) and in the dashboard.
 
 | Measured on 18 Nov 2026 | |
 | --- | --- |
@@ -366,7 +366,7 @@ The mock LLM passed every test; these only showed up against Gemini's real API.
 - [x] OpenAI or Gemini, with cost measured per answer
 - [ ] WhatsApp number live on the demo (Meta test number)
 - [ ] Google Sheet connected on the live demo
-- [ ] Live demo on Vercel + Neon
+- [x] Live demo on Vercel + Neon (Frankfurt)
 - [ ] 60-second video: question → lead in the sheet → team alerted
 
 <br/>
