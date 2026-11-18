@@ -1,7 +1,7 @@
 import os
 from decimal import Decimal
 
-from pydantic import model_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -100,6 +100,15 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 480
     # Public demo: masks phone numbers in the dashboard and the sheet, shows demo hints.
     demo_mode: bool = True
+
+    @field_validator("database_url")
+    @classmethod
+    def _use_psycopg3(cls, url: str) -> str:
+        """Neon, Supabase and Vercel give postgres:// or postgresql:// URLs; the driver is psycopg 3."""
+        for prefix in ("postgres://", "postgresql://"):
+            if url.startswith(prefix):
+                return "postgresql+psycopg://" + url[len(prefix) :]
+        return url
 
     @model_validator(mode="after")
     def _check_production(self):

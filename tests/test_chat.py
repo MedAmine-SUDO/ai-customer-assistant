@@ -230,3 +230,19 @@ def test_language_follows_the_conversation_when_a_message_has_no_clue(text, fall
     from app.services.language import detect_language
 
     assert detect_language(text, fallback) == expected
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "postgres://u:p@ep-x.neon.tech/db?sslmode=require",
+        "postgresql://u:p@ep-x.neon.tech/db?sslmode=require",
+    ],
+)
+def test_provider_database_urls_use_psycopg3(url):
+    from app.core.config import Settings
+
+    assert (
+        Settings(database_url=url).database_url
+        == "postgresql+psycopg://u:p@ep-x.neon.tech/db?sslmode=require"
+    )
