@@ -1,0 +1,69 @@
+# One command: `docker compose up`. Then open http://localhost:8000 (app), http://localhost:5678 (n8n)
+# and http://localhost:8025 (Mailpit: the team's inbox, catching every e-mail locally).
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: assistant
+      POSTGRES_PASSWORD: assistant
+      POSTGRES_DB: assistant
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U assistant"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: .
+    ports:
+      - "${API_PORT:-8000}:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg://assistant:assistant@db:5432/assistant
+      SEED_DEMO: ${SEED_DEMO:-true}
+      # Locally, n8n alerts the team and runs the 24-hour follow-up.
+      LEAD_SINKS: ${LEAD_SINKS:-sheets,n8n}
+      N8N_LEAD_WEBHOOK_URL: ${N8N_LEAD_WEBHOOK_URL:-http://n8n:5678/webhook/new-lead}
+      INTERNAL_SECRET: ${INTERNAL_SECRET:-local-internal-secret}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8000}
+      # E-mails go to Mailpit unless .env sets a real SMTP server.
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_STARTTLS: ${SMTP_STARTTLS:-false}
+      TEAM_EMAIL: ${TEAM_EMAIL:-ventes@demo.local}
+      EMAIL_FROM: ${EMAIL_FROM:-assistant@demo.local}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  n8n:
+    image: n8nio/n8n:2.46.0
+    ports:
+      - "5678:5678"
+    environment:
+      GENERIC_TIMEZONE: Africa/Tunis
+      TZ: Africa/Tunis
+      N8N_SECURE_COOKIE: "false"
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      # Read by the workflow: where to call back, and the token for it.
+      ASSISTANT_API_URL: http://api:8000
+      ASSISTANT_INTERNAL_SECRET: ${INTERNAL_SECRET:-local-internal-secret}
+      TEAM_EMAIL: ${TEAM_EMAIL:-ventes@demo.local}
+      EMAIL_FROM: ${EMAIL_FROM:-assistant@demo.local}
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+    volumes:
+      - n8ndata:/home/node/.n8n
+      - ./n8n:/workflows:ro
+
+  mailpit:
+    image: axllent/mailpit:v1.27.0
+    ports:
+      - "8025:8025"
+
+volumes:
+  pgdata:
+  n8ndata:

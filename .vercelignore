@@ -1,0 +1,11 @@
+# Not needed by the running app; keeps the function bundle small.
+.venv
+.github
+tests
+docs
+samples
+n8n
+scripts
+Dockerfile
+docker-compose.yml
+.env

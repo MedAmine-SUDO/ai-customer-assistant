@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maison Zitouna · Meubles et décoration</title>
+<meta name="description" content="Site de démonstration : un magasin de meubles fictif avec un assistant IA.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root { --c: #a16207; --c-dark: #854d0e; --ink: #1c1917; --muted: #57534e; --sand: #faf7f2; --line: #e7e5e4; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: Inter, system-ui, sans-serif; color: var(--ink); background: var(--sand); line-height: 1.55; }
+  a { color: inherit; }
+  .demo-bar { background: #1c1917; color: #e7e5e4; font-size: 13px; text-align: center; padding: 8px 16px; }
+  .demo-bar a { color: #fcd34d; font-weight: 600; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 20px; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; gap: 16px; }
+  .logo { font-family: "Playfair Display", Georgia, serif; font-size: 24px; text-decoration: none; letter-spacing: .02em; }
+  .logo small { font-family: Inter, sans-serif; font-size: 11px; letter-spacing: .2em; color: var(--muted); display: block; text-transform: uppercase; }
+  .links { display: flex; gap: 26px; font-size: 15px; color: var(--muted); }
+  .links a { text-decoration: none; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: #fff; border: 0; border-radius: 999px; padding: 12px 22px; font-weight: 600; font-size: 15px; cursor: pointer; text-decoration: none; }
+  .btn:hover { background: var(--c-dark); }
+  .btn.light { background: #fff; color: var(--ink); }
+  .hero { margin: 8px 20px 0; border-radius: 28px; overflow: hidden; min-height: 460px; display: grid; align-items: end;
+    background: radial-gradient(ellipse at 80% 20%, #fde68a55, transparent 50%), linear-gradient(135deg, #44403c, #1c1917 70%); color: #fff; position: relative; }
+  .hero-art { position: absolute; right: 4%; bottom: 0; width: 50%; max-width: 560px; }
+  .hero-inner { position: relative; z-index: 1; padding: 56px; max-width: 640px; }
+  h1 { font-family: "Playfair Display", Georgia, serif; font-size: clamp(34px, 5vw, 56px); line-height: 1.08; }
+  .hero p { color: #e7e5e4; font-size: 18px; margin: 16px 0 28px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .perks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 36px 0 8px; }
+  .perk { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 18px; font-size: 14px; color: var(--muted); }
+  .perk b { display: block; color: var(--ink); font-size: 15px; margin-bottom: 2px; }
+  section { padding: 64px 0; }
+  h2 { font-family: "Playfair Display", Georgia, serif; font-size: 34px; margin-bottom: 8px; }
+  .sub { color: var(--muted); margin-bottom: 30px; }
+  .products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .p { background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); display: flex; flex-direction: column; }
+  .p .img { height: 190px; display: grid; place-items: center; font-size: 60px; }
+  .p .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .p h3 { font-size: 17px; }
+  .p .desc { color: var(--muted); font-size: 14px; flex: 1; }
+  .p .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .p .price { font-weight: 700; font-size: 18px; }
+  .p button { background: none; border: 1.5px solid var(--ink); border-radius: 999px; padding: 7px 14px; font-weight: 600; cursor: pointer; font-size: 13px; }
+  .p button:hover { background: var(--ink); color: #fff; }
+  .made { background: #fff; border-radius: 28px; padding: 48px; display: grid; grid-template-columns: 1.2fr .8fr; gap: 40px; align-items: center; border: 1px solid var(--line); }
+  .steps { display: grid; gap: 12px; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step span { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--c); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 14px; }
+  footer { padding: 36px 0; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  @media (max-width: 900px) {
+    .products, .perks, .made { grid-template-columns: 1fr; }
+    .links { display: none; }
+    .hero-inner { padding: 32px 24px; }
+    .hero-art { display: none; }
+    .made { padding: 28px; }
+  }
+</style>
+</head>
+<body>
+<div class="demo-bar">Site de démonstration d'une entreprise fictive · L'assistant en bas à droite répond pour de vrai · <a href="/">← Retour au projet</a></div>
+
+<header class="wrap">
+  <nav>
+    <a class="logo" href="#">Maison Zitouna<small>Meubles · Déco · Sur-mesure</small></a>
+    <div class="links"><a href="#collection">Collection</a><a href="#sur-mesure">Sur-mesure</a><a href="#showroom">Showroom</a></div>
+    <button class="btn" onclick="aiAssistant.ask('Je voudrais un devis')">Demander un devis</button>
+  </nav>
+</header>
+
+<div class="hero">
+  <svg class="hero-art" viewBox="0 0 560 340" aria-hidden="true">
+    <path d="M70 340V120a150 150 0 0 1 300 0v220z" fill="#a16207" opacity=".35"/>
+    <line x1="470" y1="70" x2="470" y2="300" stroke="#d6d3d1" stroke-width="4"/>
+    <path d="M432 70h76l-14-46h-48z" fill="#fde68a"/>
+    <ellipse cx="470" cy="302" rx="34" ry="7" fill="#d6d3d1"/>
+    <rect x="40" y="170" width="380" height="80" rx="26" fill="#78350f"/>
+    <rect x="62" y="150" width="160" height="70" rx="22" fill="#b45309"/>
+    <rect x="238" y="150" width="160" height="70" rx="22" fill="#b45309"/>
+    <rect x="20" y="190" width="54" height="90" rx="22" fill="#92400e"/>
+    <rect x="386" y="190" width="54" height="90" rx="22" fill="#92400e"/>
+    <rect x="60" y="230" width="340" height="50" rx="16" fill="#a16207"/>
+    <rect x="70" y="280" width="12" height="34" rx="4" fill="#44403c"/>
+    <rect x="378" y="280" width="12" height="34" rx="4" fill="#44403c"/>
+    <rect x="300" y="160" width="70" height="52" rx="14" fill="#fde68a" opacity=".85" transform="rotate(-8 335 186)"/>
+  </svg>
+  <div class="hero-inner">
+    <h1>Du bois massif, fait en Tunisie, livré chez vous.</h1>
+    <p>Salons, chambres et salles à manger fabriqués dans notre atelier de Ben Arous. Livraison et montage
+      gratuits dans le Grand Tunis.</p>
+    <div class="cta">
+      <a class="btn light" href="#collection">Voir la collection</a>
+      <button class="btn" style="background:var(--c)" onclick="aiAssistant.open()">Une question ? Le chat répond</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap perks">
+  <div class="perk"><b>Livraison offerte</b>Grand Tunis, et partout dès 2 500 TND</div>
+  <div class="perk"><b>3 chèques sans frais</b>dès 1 500 TND d'achat</div>
+  <div class="perk"><b>10 ans de garantie</b>sur la structure en bois massif</div>
+  <div class="perk"><b>Showroom 1 200 m²</b>Route de la Marsa, Ariana</div>
+</div>
+
+<section id="collection">
+  <div class="wrap">
+    <h2>La collection 2026</h2>
+    <p class="sub">Prix TTC, montage compris. Demandez au chat les dimensions, coloris et délais.</p>
+    <div class="products">
+      <div class="p"><div class="img" style="background:#e7e5e4">🛋️</div><div class="body"><h3>Salon Carthage</h3><p class="desc">Canapé 3 places + 2 fauteuils, hêtre massif, tissu déperlant en 8 coloris.</p><div class="foot"><span class="price">3 450 TND</span><button onclick="aiAssistant.ask('Quels coloris pour le salon Carthage ?')">Questions</button></div></div></div>
+      <div class="p"><div class="img" style="background:#d6d3d1">🛏️</div><div class="body"><h3>Chambre Tabarka</h3><p class="desc">Lit 160 × 200, 2 chevets, armoire 3 portes et commode, chêne clair.</p><div class="foot"><span class="price">6 900 TND</span><button onclick="aiAssistant.ask('Délai de livraison de la chambre Tabarka à Sfax ?')">Questions</button></div></div></div>
+      <div class="p"><div class="img" style="background:#f5f5f4">🍽️</div><div class="body"><h3>Table Testour</h3><p class="desc">Bois massif, 180 × 90 cm, rallonge jusqu'à 240 cm pour 10 personnes.</p><div class="foot"><span class="price">2 100 TND</span><button onclick="aiAssistant.ask('عندكم طاولة أكل لـ 8 أشخاص؟')">Questions</button></div></div></div>
+      <div class="p"><div class="img" style="background:#f5f5f4">🛋️</div><div class="body"><h3>Canapé d'angle Hammamet</h3><p class="desc">280 × 200 cm, convertible en lit 140, coffre de rangement, velours côtelé.</p><div class="foot"><span class="price">2 890 TND</span><button onclick="aiAssistant.ask('Le canapé Hammamet est-il en stock ?')">Questions</button></div></div></div>
+      <div class="p"><div class="img" style="background:#e7e5e4">🪑</div><div class="body"><h3>Fauteuil Kairouan</h3><p class="desc">Bois et cannage, coussin offert. Le fauteuil lecture du salon.</p><div class="foot"><span class="price">690 TND</span><button onclick="aiAssistant.ask('Can I pay the Kairouan armchair in instalments?')">Questions</button></div></div></div>
+      <div class="p"><div class="img" style="background:#d6d3d1">🧸</div><div class="body"><h3>Chambre enfant Nour</h3><p class="desc">Lit 90 × 190 avec tiroir, bureau et étagère, MDF laqué blanc.</p><div class="foot"><span class="price">2 450 TND</span><button onclick="aiAssistant.ask('Vous livrez la chambre Nour à Sousse ?')">Questions</button></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="sur-mesure">
+  <div class="wrap">
+    <div class="made">
+      <div>
+        <h2>Cuisines, dressings et meubles TV sur mesure</h2>
+        <p class="sub">Fabriqués dans notre atelier en 4 à 6 semaines. Prise de mesures gratuite dans le Grand Tunis.</p>
+        <button class="btn" onclick="aiAssistant.ask('Je veux un devis pour une cuisine sur mesure')">Décrire mon projet au chat</button>
+      </div>
+      <div class="steps">
+        <div class="step"><span>1</span><div><b>Vous décrivez votre projet</b><br>au chat, au téléphone ou au showroom</div></div>
+        <div class="step"><span>2</span><div><b>Prise de mesures</b><br>à domicile, gratuite dans le Grand Tunis</div></div>
+        <div class="step"><span>3</span><div><b>Devis sous 72 h</b><br>acompte de 30 % à la commande</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="showroom">
+  <div class="wrap">
+    <h2>Le showroom</h2>
+    <p class="sub">Route de la Marsa, Km 5, 2080 Ariana · Lundi – samedi 9h30 – 19h30, dimanche 10h – 18h · +216 70 000 000</p>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>© 2026 Maison Zitouna (entreprise fictive, site de démonstration)</span><a href="/">Voir le projet</a></div></footer>
+
+<script src="/widget.js" data-tenant="meubles" data-color="#a16207" defer></script>
+</body>
+</html>

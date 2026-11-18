@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tableau de bord · Assistant IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #0b1220; --muted: #6b7280; --line: #e5e7eb; --bg: #f5f7fb; --card: #fff; --accent: #4f46e5; --ok: #059669; --warn: #d97706; --bad: #dc2626; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: Inter, system-ui, sans-serif; color: var(--ink); background: var(--bg); font-size: 14px; line-height: 1.5; }
+  a { color: var(--accent); }
+  button { font: inherit; cursor: pointer; }
+  .top { background: var(--ink); color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .top b { font-size: 15px; }
+  .top a { color: #c7d2fe; text-decoration: none; font-size: 13px; }
+  .tabs { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+  .tabs button { background: transparent; color: #cbd5e1; border: 0; padding: 7px 12px; border-radius: 8px; font-weight: 600; }
+  .tabs button.on { background: #1f2937; color: #fff; }
+  .badge { display: inline-block; min-width: 18px; padding: 0 6px; border-radius: 999px; background: var(--bad); color: #fff; font-size: 11px; margin-left: 4px; }
+  main { max-width: 1280px; margin: 0 auto; padding: 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 16px; }
+  .kpi b { display: block; font-size: 24px; letter-spacing: -.02em; }
+  .kpi span { color: var(--muted); font-size: 12.5px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  h2 { font-size: 16px; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; color: var(--muted); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr.new td { animation: flash 2.5s ease-out; }
+  @keyframes flash { from { background: #fef9c3; } to { background: transparent; } }
+  .tag { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #f3f4f6; color: #374151; white-space: nowrap; }
+  .tag.ok { background: #d1fae5; color: #065f46; } .tag.warn { background: #fef3c7; color: #92400e; } .tag.bad { background: #fee2e2; color: #991b1b; }
+  .tag.dentiste { background: #cffafe; color: #155e75; } .tag.meubles { background: #fef3c7; color: #854d0e; }
+  .table-wrap { overflow-x: auto; }
+  .muted { color: var(--muted); }
+  .conv-layout { display: grid; grid-template-columns: 360px 1fr; gap: 16px; min-height: 70vh; }
+  .conv-list { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+  .filters { display: flex; gap: 6px; padding: 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .filters button, .btn { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 10px; font-weight: 600; font-size: 13px; }
+  .filters button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .items { overflow-y: auto; max-height: 72vh; }
+  .item { padding: 12px 14px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .item:hover, .item.on { background: #f8fafc; }
+  .item .l1 { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; }
+  .item .l2 { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .thread { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+  .thread-head { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .thread-head .who { font-weight: 700; font-size: 15px; margin-right: auto; }
+  .msgs { flex: 1; overflow-y: auto; padding: 16px; background: #fafbfc; display: flex; flex-direction: column; gap: 10px; max-height: 60vh; }
+  .m { max-width: 78%; padding: 9px 12px; border-radius: 14px; white-space: pre-wrap; }
+  .m.user { align-self: flex-end; background: var(--ink); color: #fff; }
+  .m.assistant { background: #fff; border: 1px solid var(--line); }
+  .m.human { background: #fffbeb; border: 1px solid #fcd34d; }
+  .m.event { align-self: center; background: #eef2ff; color: #3730a3; font-size: 12.5px; border-radius: 999px; padding: 4px 12px; }
+  .m .meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .m.user .meta { color: #9ca3af; }
+  .reply { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
+  .reply textarea { flex: 1; border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; font: inherit; resize: vertical; min-height: 42px; }
+  .lead-box { margin: 12px 16px 0; padding: 12px; border-radius: 10px; background: #ecfdf5; border: 1px solid #a7f3d0; font-size: 13px; }
+  .empty { display: grid; place-items: center; color: var(--muted); height: 100%; min-height: 300px; text-align: center; padding: 20px; }
+  .drop { border: 2px dashed #c7d2fe; border-radius: 14px; padding: 28px; text-align: center; color: var(--muted); background: #f8faff; cursor: pointer; }
+  .drop.over { background: #eef2ff; border-color: var(--accent); }
+  .drop b { color: var(--ink); }
+  .row-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+  select { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font: inherit; background: #fff; }
+  .login { max-width: 380px; margin: 12vh auto; }
+  .login input { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; font: inherit; margin: 12px 0; }
+  .login .btn { width: 100%; padding: 11px; }
+  .hint { background: #eef2ff; color: #3730a3; border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-top: 12px; }
+  .integr { display: grid; gap: 8px; }
+  .integr div { display: flex; justify-content: space-between; }
+  pre { background: #0b1220; color: #e5e7eb; padding: 12px; border-radius: 10px; overflow-x: auto; font-size: 12px; }
+  .hidden { display: none !important; }
+  .toast { position: fixed; right: 20px; bottom: 20px; background: var(--ink); color: #fff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.25); font-weight: 600; }
+  @media (max-width: 1000px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .grid2, .conv-layout { grid-template-columns: 1fr; }
+    .m { max-width: 92%; }
+  }
+</style>
+</head>
+<body>
+
+<section id="login" class="login card hidden">
+  <h2>Tableau de bord de l'équipe</h2>
+  <p class="muted">Leads, conversations à reprendre, documents et factures.</p>
+  <form id="login-form">
+    <input type="password" id="password" placeholder="Mot de passe" autocomplete="current-password" required>
+    <button class="btn primary" type="submit">Se connecter</button>
+  </form>
+  <p class="hint hidden" id="demo-hint"></p>
+  <p class="muted" id="login-error" style="color:var(--bad);margin-top:8px"></p>
+</section>
+
+<div id="app" class="hidden">
+  <div class="top">
+    <b>Assistant IA · équipe</b>
+    <a href="/">← Le projet</a>
+    <div class="tabs">
+      <button data-tab="overview" class="on">Aperçu</button>
+      <button data-tab="leads">Leads <span class="badge hidden" id="b-leads"></span></button>
+      <button data-tab="conversations">Conversations <span class="badge hidden" id="b-human"></span></button>
+      <button data-tab="knowledge">Documents</button>
+      <button data-tab="invoices">Factures PDF</button>
+    </div>
+  </div>
+
+  <main>
+    <div data-panel="overview">
+      <div class="kpis" id="kpis"></div>
+      <div class="grid2">
+        <div class="card"><h2>Coût mesuré</h2><div id="costs" class="integr"></div></div>
+        <div class="card"><h2>Intégrations</h2><div id="integrations" class="integr"></div></div>
+      </div>
+      <div class="card" style="margin-top:16px"><h2>Derniers leads</h2><div class="table-wrap"><table id="recent-leads"></table></div></div>
+    </div>
+
+    <div data-panel="leads" class="hidden">
+      <div class="card">
+        <div class="row-actions">
+          <h2 style="margin:0;margin-right:auto">Leads capturés</h2>
+          <select id="lead-tenant"><option value="">Toutes les entreprises</option><option value="dentiste">Cabinet Sahel Sourire</option><option value="meubles">Maison Zitouna</option></select>
+          <span class="muted">Actualisé toutes les 10 s</span>
+        </div>
+        <div class="table-wrap"><table id="leads"></table></div>
+      </div>
+    </div>
+
+    <div data-panel="conversations" class="hidden">
+      <div class="conv-layout">
+        <div class="card conv-list">
+          <div class="filters">
+            <button data-f="all" class="on">Toutes</button>
+            <button data-f="human">À reprendre</button>
+            <button data-f="dentiste">Dentiste</button>
+            <button data-f="meubles">Meubles</button>
+          </div>
+          <div class="items" id="conv-items"></div>
+        </div>
+        <div class="card thread" id="thread"><div class="empty">Choisissez une conversation pour la relire<br>ou répondre au client.</div></div>
+      </div>
+    </div>
+
+    <div data-panel="knowledge" class="hidden">
+      <div class="grid2">
+        <div class="card">
+          <h2>Documents de l'assistant</h2>
+          <p class="muted" style="margin-bottom:12px">L'assistant ne répond qu'à partir de ces documents. Un document ajouté sert dès la question suivante.</p>
+          <div class="table-wrap"><table id="docs"></table></div>
+        </div>
+        <div class="card">
+          <h2>Ajouter ou remplacer un document</h2>
+          <div class="row-actions"><select id="doc-tenant"><option value="dentiste">Cabinet Sahel Sourire</option><option value="meubles">Maison Zitouna</option></select></div>
+          <label class="drop" id="doc-drop"><input type="file" id="doc-file" accept=".md,.txt,.pdf" hidden>
+            <b>Déposez un fichier</b><br>.pdf, .md ou .txt (FAQ, tarifs, catalogue…)</label>
+          <p class="muted" id="doc-status" style="margin-top:10px"></p>
+        </div>
+      </div>
+    </div>
+
+    <div data-panel="invoices" class="hidden">
+      <div class="grid2" style="margin-bottom:16px">
+        <div class="card">
+          <h2>Extraire une facture ou un devis</h2>
+          <label class="drop" id="pdf-drop"><input type="file" id="pdf-file" accept="application/pdf" hidden>
+            <b>Déposez un PDF</b><br>fournisseur, date, HT, TVA, TTC → une ligne dans la feuille « Factures »</label>
+          <p class="muted" id="pdf-status" style="margin-top:10px"></p>
+        </div>
+        <div class="card">
+          <h2>Pas de facture sous la main ?</h2>
+          <p class="muted" style="margin-bottom:10px">Téléchargez un exemple (fournisseurs fictifs), puis déposez-le à gauche.</p>
+          <div class="integr">
+            <div><a href="https://github.com/MedAmine-SUDO/ai-customer-assistant/raw/main/samples/facture-medident-2026-0412.pdf">Facture Medi-Dent (TVA 7 %)</a></div>
+            <div><a href="https://github.com/MedAmine-SUDO/ai-customer-assistant/raw/main/samples/devis-bois-du-cap-bon-D2611.pdf">Devis Scierie du Cap Bon</a></div>
+            <div><a href="https://github.com/MedAmine-SUDO/ai-customer-assistant/raw/main/samples/facture-imprimerie-el-amal-F-3391.pdf">Facture Imprimerie El Amal</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="card"><h2>Documents extraits</h2><div class="table-wrap"><table id="invoices"></table></div></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const NAMES = { dentiste: "Sahel Sourire", meubles: "Maison Zitouna" };
+const CHANNEL = { web: "Site", whatsapp: "WhatsApp" };
+const STATUS = { new: ["Nouveau", "warn"], contacted: ["Équipe prévenue", "ok"], followed_up: ["Relancé", ""] };
+let token = null;
+try { token = sessionStorage.getItem("admin-token"); } catch {}
+let tab = "overview", convFilter = "all", currentConv = null, seenLeads = new Set(), timer = null;
+
+const when = (iso) => new Date(iso).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+const money = (v, d = 4) => Number(v).toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d });
+
+function toast(text) {
+  const t = document.createElement("div"); t.className = "toast"; t.textContent = text;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3500);
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch("/api/v1" + path, { ...opts, headers: { ...(opts.headers || {}), Authorization: "Bearer " + token } });
+  if (res.status === 401) { logout(); throw new Error("auth"); }
+  if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b.detail || res.statusText); }
+  return res.status === 204 ? null : res.json();
+}
+
+function logout() { token = null; try { sessionStorage.removeItem("admin-token"); } catch {} show(); }
+
+function show() {
+  $("#login").classList.toggle("hidden", !!token);
+  $("#app").classList.toggle("hidden", !token);
+  clearInterval(timer);
+  if (token) { refresh(); timer = setInterval(refresh, 10000); }
+}
+
+$("#login-form").onsubmit = async (e) => {
+  e.preventDefault();
+  const res = await fetch("/api/v1/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: $("#password").value }) });
+  if (!res.ok) { $("#login-error").textContent = "Mot de passe incorrect."; return; }
+  token = (await res.json()).access_token;
+  try { sessionStorage.setItem("admin-token", token); } catch {}
+  show();
+};
+
+fetch("/api/v1/config").then((r) => r.json()).then((c) => {
+  if (c.admin_password) { const h = $("#demo-hint"); h.textContent = "Démo publique : le mot de passe est « " + c.admin_password + " ». Les numéros de téléphone sont masqués."; h.classList.remove("hidden"); }
+});
+
+document.querySelectorAll(".tabs button").forEach((b) => b.onclick = () => {
+  tab = b.dataset.tab;
+  document.querySelectorAll(".tabs button").forEach((x) => x.classList.toggle("on", x === b));
+  document.querySelectorAll("[data-panel]").forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== tab));
+  refresh();
+});
+
+function leadRows(leads, compact) {
+  const head = `<tr><th>Reçu</th><th>Entreprise</th><th>Nom</th><th>Téléphone</th><th>Besoin</th>${compact ? "" : "<th>Disponibilité</th><th>Langue</th>"}<th>Canal</th><th>Statut</th>${compact ? "" : "<th>Sheet</th><th>Relance</th>"}<th></th></tr>`;
+  if (!leads.length) return head + `<tr><td colspan="12" class="muted">Pas encore de lead. Ouvrez un site de démo et demandez un rendez-vous.</td></tr>`;
+  return head + leads.map((l) => {
+    const isNew = !seenLeads.has(l.id) && seenLeads.size > 0;
+    const [label, cls] = STATUS[l.status] || [l.status, ""];
+    return `<tr class="${isNew ? "new" : ""}">
+      <td>${when(l.created_at)}</td><td><span class="tag ${l.tenant}">${NAMES[l.tenant] || l.tenant}</span></td>
+      <td><b>${esc(l.name)}</b>${l.email ? `<br><span class="muted">${esc(l.email)}</span>` : ""}</td><td style="white-space:nowrap">${esc(l.phone)}</td>
+      <td>${esc(l.need)}</td>${compact ? "" : `<td>${esc(l.preferred_time || "–")}</td><td>${l.language.toUpperCase()}</td>`}
+      <td>${CHANNEL[l.channel] || l.channel}</td><td><span class="tag ${cls}">${label}</span></td>
+      ${compact ? "" : `<td>${l.sheet_synced ? "✓" : "–"}</td><td>${l.followup_sent_at ? when(l.followup_sent_at) : `<span class="muted">prévue ${when(l.followup_due_at)}</span>`}</td>`}
+      <td><a href="#c=${l.conversation_id}" onclick="openConv('${l.conversation_id}')">Conversation</a></td></tr>`;
+  }).join("");
+}
+
+function trackLeads(leads) {
+  const fresh = leads.filter((l) => !seenLeads.has(l.id));
+  if (seenLeads.size && fresh.length) toast(`🔔 Nouveau lead : ${fresh[0].name}`);
+  leads.forEach((l) => seenLeads.add(l.id));
+}
+
+async function refresh() {
+  try {
+    const [o, convs] = await Promise.all([api("/admin/overview"), api("/admin/conversations?needs_human=true")]);
+    const waiting = convs.filter((c) => c.mode === "human").length;
+    $("#b-human").textContent = waiting; $("#b-human").classList.toggle("hidden", !waiting);
+    if (tab === "overview") renderOverview(o);
+    if (tab === "leads" || tab === "overview") {
+      const t = $("#lead-tenant").value;
+      const leads = await api("/admin/leads" + (t ? "?tenant=" + t : ""));
+      if (tab === "leads") $("#leads").innerHTML = leadRows(leads, false);
+      else $("#recent-leads").innerHTML = leadRows(leads.slice(0, 6), true);
+      trackLeads(leads);
+    }
+    if (tab === "conversations") { await renderConvList(); if (currentConv) openConv(currentConv, true); }
+    if (tab === "knowledge") renderDocs();
+    if (tab === "invoices") renderInvoices();
+  } catch (e) { if (e.message !== "auth") console.error(e); }
+}
+
+function renderOverview(o) {
+  const c = o.costs;
+  const k = [
+    [o.conversations, "conversations"], [o.messages, "messages de clients"], [o.leads, "leads capturés"],
+    [Math.round(o.lead_rate * 100) + " %", "des conversations → lead"], [o.waiting_for_human, "à reprendre par l'équipe"],
+    [c.answers_measured ? c.median_answer_seconds.toLocaleString("fr-FR") + " s" : "–", "temps de réponse médian"],
+  ];
+  $("#kpis").innerHTML = k.map(([v, l]) => `<div class="card kpi"><b>${v}</b><span>${l}</span></div>`).join("");
+  $("#costs").innerHTML = [
+    ["Modèle", c.model], ["Conversations mesurées", c.conversations_measured],
+    ["Coût moyen par conversation", money(c.avg_cost_per_conversation_usd) + " $"],
+    ["Pour 1 000 conversations", money(c.cost_per_1000_conversations_usd, 2) + " $ ≈ " + money(c.cost_per_1000_conversations_tnd, 2) + " TND"],
+    ["Dépensé sur 24 h / budget", money(o.spent_last_24h_usd) + " $ / " + o.daily_budget_usd + " $"],
+  ].map(([a, b]) => `<div><span class="muted">${a}</span><b>${esc(b)}</b></div>`).join("");
+  const i = o.integrations, on = (v) => v ? '<span class="tag ok">connecté</span>' : '<span class="tag">non configuré</span>';
+  $("#integrations").innerHTML = [
+    ["LLM", `<span class="tag ${i.llm === "openai" ? "ok" : "warn"}">${i.llm}</span>`], ["Google Sheets", on(i.google_sheets)],
+    ["E-mail équipe", on(i.email)], ["WhatsApp", on(i.whatsapp)], ["n8n", on(i.n8n)], ["Envoi des leads", esc(i.lead_sinks.join(", ") || "–")],
+  ].map(([a, b]) => `<div><span class="muted">${a}</span>${b}</div>`).join("");
+}
+
+async function renderConvList() {
+  const q = convFilter === "human" ? "?needs_human=true" : convFilter === "all" ? "" : "?tenant=" + convFilter;
+  const convs = await api("/admin/conversations" + q);
+  $("#conv-items").innerHTML = convs.length ? convs.map((c) => `
+    <div class="item ${c.id === currentConv ? "on" : ""}" onclick="openConv('${c.id}')">
+      <div class="l1"><span>${esc(c.customer_name || (c.channel === "whatsapp" ? "Client WhatsApp" : "Visiteur"))}</span><span class="muted" style="font-weight:400">${when(c.updated_at)}</span></div>
+      <div class="l2">${esc(c.preview)}</div>
+      <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap"><span class="tag ${c.tenant}">${NAMES[c.tenant]}</span><span class="tag">${CHANNEL[c.channel]}</span>
+      ${c.has_lead ? '<span class="tag ok">lead</span>' : ""}${c.mode === "human" ? '<span class="tag bad">à reprendre</span>' : ""}</div>
+    </div>`).join("") : `<div class="empty">Aucune conversation.</div>`;
+}
+
+document.querySelectorAll(".filters button").forEach((b) => b.onclick = () => {
+  convFilter = b.dataset.f;
+  document.querySelectorAll(".filters button").forEach((x) => x.classList.toggle("on", x === b));
+  renderConvList();
+});
+
+async function openConv(id, silent) {
+  if (tab !== "conversations") { document.querySelector('[data-tab="conversations"]').click(); }
+  currentConv = id;
+  const c = await api("/admin/conversations/" + id);
+  const draft = $("#reply-text") ? $("#reply-text").value : "";
+  const lead = c.lead ? `<div class="lead-box">✓ <b>Lead :</b> ${esc(c.lead.name)} · ${esc(c.lead.phone)} · ${esc(c.lead.need)}${c.lead.preferred_time ? " · " + esc(c.lead.preferred_time) : ""}</div>` : "";
+  $("#thread").innerHTML = `
+    <div class="thread-head"><span class="who">${esc(c.customer_name || "Visiteur")}</span>
+      <span class="tag ${c.tenant}">${NAMES[c.tenant]}</span><span class="tag">${CHANNEL[c.channel]}</span>
+      <span class="tag">${money(c.cost_usd)} $</span>
+      ${c.mode === "human" ? `<span class="tag bad">${esc(c.handoff_reason || "repris par l'équipe")}</span><button class="btn" onclick="release('${c.id}')">Rendre à l'assistant</button>` : '<span class="tag ok">assistant actif</span>'}
+    </div>${lead}
+    <div class="msgs" id="thread-msgs">${c.messages.map((m) => `<div class="m ${m.role}" dir="auto">${esc(m.content)}${m.role === "assistant" && m.latency_ms != null ? `<div class="meta">${(m.latency_ms / 1000).toFixed(1)} s · ${money(m.cost_usd, 5)} $${m.sources && m.sources.length ? " · " + m.sources.slice(0, 2).map((s) => esc(s.source + " › " + s.heading)).join(", ") : ""}</div>` : m.role === "human" ? '<div class="meta">équipe</div>' : ""}</div>`).join("")}</div>
+    <form class="reply" onsubmit="sendReply(event,'${c.id}')"><textarea id="reply-text" placeholder="Répondre au client (l'assistant se met en pause)…"></textarea><button class="btn primary">Envoyer</button></form>`;
+  $("#reply-text").value = draft;
+  const box = $("#thread-msgs"); box.scrollTop = box.scrollHeight;
+  if (!silent) renderConvList();
+}
+
+async function sendReply(e, id) {
+  e.preventDefault();
+  const text = $("#reply-text").value.trim();
+  if (!text) return;
+  await api(`/admin/conversations/${id}/reply`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text }) });
+  $("#reply-text").value = "";
+  openConv(id);
+}
+
+async function release(id) { await api(`/admin/conversations/${id}/release`, { method: "POST" }); openConv(id); refresh(); }
+
+async function renderDocs() {
+  const docs = await api("/admin/knowledge");
+  $("#docs").innerHTML = "<tr><th>Entreprise</th><th>Fichier</th><th>Titre</th><th>Passages</th><th></th></tr>" + docs.map((d) =>
+    `<tr><td><span class="tag ${d.tenant}">${NAMES[d.tenant]}</span></td><td>${esc(d.source)}</td><td>${esc(d.title)}</td><td>${d.chunks}</td>
+     <td><button class="btn" onclick="delDoc(${d.id}, '${esc(d.source)}')">Retirer</button></td></tr>`).join("");
+}
+
+async function delDoc(id, name) {
+  if (!confirm("Retirer « " + name + " » ? L'assistant ne s'en servira plus.")) return;
+  await api("/admin/knowledge/" + id, { method: "DELETE" }); renderDocs();
+}
+
+async function renderInvoices() {
+  const rows = await api("/admin/extract");
+  const n = (v) => v == null ? "–" : Number(v).toLocaleString("fr-FR", { minimumFractionDigits: 3 });
+  $("#invoices").innerHTML = "<tr><th>Fichier</th><th>Type</th><th>Fournisseur</th><th>Matricule</th><th>N°</th><th>Date</th><th>HT</th><th>TVA</th><th>TTC</th><th>Sheet</th><th>Durée</th></tr>" +
+    (rows.length ? rows.map((r) => `<tr><td>${esc(r.filename)}</td><td><span class="tag">${esc(r.doc_type)}</span></td><td><b>${esc(r.supplier)}</b></td><td>${esc(r.supplier_tax_id || "–")}</td>
+      <td>${esc(r.number || "–")}</td><td>${esc(r.date || "–")}</td><td>${n(r.total_ht)}</td><td>${n(r.total_tva)}</td><td><b>${n(r.total_ttc)}</b> ${esc(r.currency || "")}</td>
+      <td>${r.sheet_synced ? "✓" : "–"}</td><td>${r.latency_ms != null ? (r.latency_ms / 1000).toFixed(1) + " s" : ""}</td></tr>`).join("")
+      : '<tr><td colspan="11" class="muted">Aucun document extrait.</td></tr>');
+}
+
+function dropZone(zone, input, handler) {
+  zone.addEventListener("dragover", (e) => { e.preventDefault(); zone.classList.add("over"); });
+  zone.addEventListener("dragleave", () => zone.classList.remove("over"));
+  zone.addEventListener("drop", (e) => { e.preventDefault(); zone.classList.remove("over"); if (e.dataTransfer.files[0]) handler(e.dataTransfer.files[0]); });
+  input.addEventListener("change", () => { if (input.files[0]) handler(input.files[0]); input.value = ""; });
+}
+
+async function upload(path, file, status) {
+  const fd = new FormData(); fd.append("file", file);
+  status.textContent = "Envoi de " + file.name + "…";
+  try { const r = await api(path, { method: "POST", body: fd }); return r; }
+  catch (e) { status.textContent = "Erreur : " + e.message; return null; }
+}
+
+dropZone($("#doc-drop"), $("#doc-file"), async (f) => {
+  const r = await upload("/admin/knowledge/" + $("#doc-tenant").value, f, $("#doc-status"));
+  if (r) { $("#doc-status").textContent = `✓ ${r.source} : ${r.chunks} passages indexés. Posez une question dans le chat !`; renderDocs(); }
+});
+dropZone($("#pdf-drop"), $("#pdf-file"), async (f) => {
+  const r = await upload("/admin/extract", f, $("#pdf-status"));
+  if (r) { $("#pdf-status").textContent = `✓ ${r.supplier || "Document"} · ${r.total_ttc ?? "?"} ${r.currency || ""} en ${(r.latency_ms / 1000).toFixed(1)} s${r.sheet_synced ? ", ajouté à la feuille" : ""}`; renderInvoices(); }
+});
+$("#lead-tenant").onchange = refresh;
+
+show();
+const m = location.hash.match(/c=([a-f0-9]+)/);
+if (token && m) openConv(m[1]);
+</script>
+</body>
+</html>

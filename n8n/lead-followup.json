@@ -1,0 +1,218 @@
+{
+  "name": "Lead → alerte équipe → relance à 24 h",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-lead",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "a1f0c7f2-1d1e-4c55-9a51-1b7e2f6a0001",
+      "name": "Nouveau lead",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "5c0f4a5e-2a8d-4b8e-9f1e-000000000001"
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.EMAIL_FROM }}",
+        "toEmail": "={{ $env.TEAM_EMAIL }}",
+        "subject": "={{ $json.body.alert_subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.body.alert_html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a1f0c7f2-1d1e-4c55-9a51-1b7e2f6a0002",
+      "name": "E-mail à l'équipe",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        260,
+        200
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "smtpEquipe0001",
+          "name": "SMTP équipe"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $('Nouveau lead').item.json.body.followup_after_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "a1f0c7f2-1d1e-4c55-9a51-1b7e2f6a0004",
+      "name": "Attendre 24 h",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        260,
+        420
+      ],
+      "webhookId": "5c0f4a5e-2a8d-4b8e-9f1e-000000000004"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.ASSISTANT_API_URL }}/internal/leads/{{ $('Nouveau lead').item.json.body.lead_id }}/followup",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.ASSISTANT_INTERNAL_SECRET }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1f0c7f2-1d1e-4c55-9a51-1b7e2f6a0005",
+      "name": "Envoyer la relance",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.sent_to_customer }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.already_sent }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "a1f0c7f2-1d1e-4c55-9a51-1b7e2f6a0006",
+      "name": "Pas envoyée au client ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        780,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.EMAIL_FROM }}",
+        "toEmail": "={{ $env.TEAM_EMAIL }}",
+        "subject": "={{ $('Nouveau lead').item.json.body.reminder_subject }}",
+        "emailFormat": "html",
+        "html": "={{ $('Nouveau lead').item.json.body.reminder_html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a1f0c7f2-1d1e-4c55-9a51-1b7e2f6a0007",
+      "name": "E-mail : relance à faire",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1040,
+        440
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "smtpEquipe0001",
+          "name": "SMTP équipe"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Nouveau lead": {
+      "main": [
+        [
+          {
+            "node": "E-mail à l'équipe",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Attendre 24 h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attendre 24 h": {
+      "main": [
+        [
+          {
+            "node": "Envoyer la relance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envoyer la relance": {
+      "main": [
+        [
+          {
+            "node": "Pas envoyée au client ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pas envoyée au client ?": {
+      "main": [
+        [
+          {
+            "node": "E-mail : relance à faire",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Africa/Tunis"
+  },
+  "pinData": {},
+  "active": false
+}

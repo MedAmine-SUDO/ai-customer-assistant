@@ -1,0 +1,15 @@
+[
+  {
+    "id": "smtpEquipe0001",
+    "name": "SMTP équipe",
+    "type": "smtp",
+    "data": {
+      "user": "",
+      "password": "",
+      "host": "mailpit",
+      "port": 1025,
+      "secure": false,
+      "disableStartTls": true
+    }
+  }
+]

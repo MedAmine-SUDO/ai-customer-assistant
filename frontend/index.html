@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assistant IA pour entreprise</title>
+<meta name="description" content="Un assistant IA qui répond à vos clients 24/7 à partir de vos documents, capture chaque lead et l'envoie à votre équipe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #0b1220; --muted: #4b5563; --line: #e5e7eb; --bg: #ffffff; --soft: #f5f7fb; --accent: #4f46e5; --accent-soft: #eef2ff; --ok: #059669; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: Inter, system-ui, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.55; }
+  a { color: inherit; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; gap: 12px; }
+  .brand { font-weight: 800; letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; }
+  .brand i { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, #4f46e5, #06b6d4); display: inline-block; }
+  .nav-links { display: flex; gap: 18px; font-size: 14px; color: var(--muted); flex-wrap: wrap; }
+  .nav-links a { text-decoration: none; }
+  .nav-links a:hover { color: var(--ink); }
+  header.hero { padding: 48px 0 32px; text-align: center; }
+  .pill { display: inline-flex; gap: 8px; align-items: center; background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: 13px; padding: 6px 12px; border-radius: 999px; }
+  .pill .live { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px #05966922; }
+  h1 { font-size: clamp(32px, 5.4vw, 56px); line-height: 1.07; letter-spacing: -.03em; margin: 20px auto 16px; max-width: 16em; }
+  h1 span { background: linear-gradient(90deg, #4f46e5, #0891b2); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .subtitle { font-size: 18px; color: var(--muted); max-width: 40em; margin: 0 auto; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 36px 0 0; }
+  .stat { border: 1px solid var(--line); border-radius: 16px; padding: 18px; text-align: left; background: #fff; }
+  .stat b { display: block; font-size: 26px; letter-spacing: -.02em; }
+  .stat span { color: var(--muted); font-size: 13px; }
+  section { padding: 56px 0; }
+  h2 { font-size: 30px; letter-spacing: -.02em; margin-bottom: 8px; }
+  .sub { color: var(--muted); margin-bottom: 28px; }
+  .demos { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .demo { border-radius: 22px; padding: 28px; color: #fff; text-decoration: none; display: flex; flex-direction: column; gap: 10px; min-height: 250px; position: relative; overflow: hidden; transition: transform .15s; }
+  .demo:hover { transform: translateY(-3px); }
+  .demo.dent { background: linear-gradient(150deg, #0e7490, #164e63); }
+  .demo.meub { background: linear-gradient(150deg, #a16207, #422006); }
+  .demo small { text-transform: uppercase; letter-spacing: .14em; font-size: 11px; opacity: .85; }
+  .demo h3 { font-size: 24px; }
+  .demo p { opacity: .9; font-size: 15px; flex: 1; }
+  .demo .go { font-weight: 700; }
+  .try { margin-top: 18px; background: var(--soft); border-radius: 18px; padding: 20px 22px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+  .try ol { padding-left: 18px; color: var(--muted); font-size: 15px; }
+  .try ol b { color: var(--ink); }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 12px; padding: 11px 16px; font-weight: 600; font-size: 14px; text-decoration: none; border: 1px solid var(--line); background: #fff; }
+  .btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; counter-reset: step; }
+  .flow div { border: 1px solid var(--line); border-radius: 16px; padding: 18px; font-size: 14px; color: var(--muted); position: relative; }
+  .flow div::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+  .flow b { color: var(--ink); display: block; margin-bottom: 4px; font-size: 15px; }
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .f { border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .f h3 { font-size: 16px; margin-bottom: 6px; }
+  .f p { color: var(--muted); font-size: 14.5px; }
+  .cost { background: var(--ink); color: #e5e7eb; border-radius: 24px; padding: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+  .cost h2 { color: #fff; }
+  .cost .big { font-size: 52px; font-weight: 800; color: #fff; letter-spacing: -.03em; line-height: 1; }
+  .cost .big small { font-size: 18px; font-weight: 600; color: #9ca3af; }
+  .cost p { color: #9ca3af; font-size: 14.5px; }
+  .cost ul { list-style: none; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+  .cost li { display: flex; justify-content: space-between; border-bottom: 1px solid #1f2937; padding-bottom: 8px; }
+  .stack { display: flex; flex-wrap: wrap; gap: 8px; }
+  .stack span { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 500; }
+  footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  @media (max-width: 860px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+    .demos, .features, .cost { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .cost { padding: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand"><i></i>Assistant IA</div>
+    <div class="nav-links">
+      <a href="#demo">Démo</a><a href="#cout">Coût</a><a href="/admin">Tableau de bord</a><a href="/docs">API</a>
+      <a href="https://github.com/MedAmine-SUDO/ai-customer-assistant">GitHub</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <span class="pill"><span class="live"></span>Démo en ligne · français, anglais, arabe</span>
+    <h1>Un assistant IA qui répond à vos clients <span>24h/24</span>, capture chaque lead et l'envoie à votre équipe.</h1>
+    <p class="subtitle">Il répond à partir de vos propres documents (FAQ, catalogue, tarifs), demande le nom et le
+      téléphone quand un client est intéressé, l'enregistre dans Google Sheets, prévient l'équipe par e-mail
+      et relance le client le lendemain.</p>
+    <div class="stats">
+      <div class="stat"><b id="s-time">–</b><span>temps de réponse médian</span></div>
+      <div class="stat"><b id="s-cost">–</b><span>pour 1 000 conversations</span></div>
+      <div class="stat"><b id="s-conv">–</b><span>conversations mesurées</span></div>
+      <div class="stat"><b>3</b><span>langues : FR · EN · العربية</span></div>
+    </div>
+  </header>
+</div>
+
+<section id="demo">
+  <div class="wrap">
+    <h2>Essayez-le sur deux entreprises fictives</h2>
+    <p class="sub">Le même moteur, deux bases de connaissances. Le chat est en bas à droite de chaque site.</p>
+    <div class="demos">
+      <a class="demo dent" href="/demo/dentiste">
+        <small>Cabinet dentaire · Sousse</small>
+        <h3>Cabinet Dentaire Sahel Sourire</h3>
+        <p>« Combien coûte un détartrage ? », « Vous êtes ouverts samedi ? », « J'ai mal à une dent » :
+          tarifs, horaires, urgences, et la prise de rendez-vous.</p>
+        <span class="go">Ouvrir le site →</span>
+      </a>
+      <a class="demo meub" href="/demo/meubles">
+        <small>Meubles et décoration · Ariana</small>
+        <h3>Maison Zitouna</h3>
+        <p>« Prix du salon Carthage ? », « Vous livrez à Sfax ? », « Je veux une cuisine sur mesure » :
+          catalogue, livraison, paiement en plusieurs fois et demandes de devis.</p>
+        <span class="go">Ouvrir le site →</span>
+      </a>
+    </div>
+    <div class="try">
+      <ol>
+        <li>Demandez un <b>prix</b> sur l'un des sites.</li>
+        <li>Dites que vous voulez un <b>rendez-vous</b> ou un <b>devis</b>, donnez un nom et un numéro (fictif).</li>
+        <li>Regardez le <b>lead</b> arriver dans la feuille et le tableau de bord.</li>
+      </ol>
+      <div class="actions">
+        <a class="btn" id="sheet" aria-disabled="true" target="_blank" rel="noopener">📊 La feuille Google Sheets</a>
+        <a class="btn" id="wa-dentiste" aria-disabled="true" target="_blank" rel="noopener">💬 Le cabinet sur WhatsApp</a>
+        <a class="btn" id="wa-meubles" aria-disabled="true" target="_blank" rel="noopener">💬 La boutique sur WhatsApp</a>
+        <a class="btn primary" href="/admin">Tableau de bord<span id="pwd"></span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Ce qui se passe en coulisses</h2>
+    <p class="sub">De la question du client à la relance du lendemain, sans intervention.</p>
+    <div class="flow">
+      <div><b>Le client écrit</b>sur le site ou WhatsApp, dans sa langue, même en darija.</div>
+      <div><b>Recherche dans vos documents</b>les passages utiles de la FAQ, des tarifs ou du catalogue (RAG, pgvector).</div>
+      <div><b>Réponse en quelques secondes</b>uniquement à partir de ces passages, sans inventer de prix.</div>
+      <div><b>Lead capturé</b>nom, téléphone et besoin enregistrés dans Google Sheets, l'équipe prévenue.</div>
+      <div><b>Relance à 24 h</b>un workflow n8n relance le client ou prépare le message WhatsApp.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="features">
+      <div class="f"><h3>🙋 Passe la main à un humain</h3><p>En cas d'urgence, de réclamation ou de question hors documents, l'équipe est alertée et répond dans le même chat.</p></div>
+      <div class="f"><h3>📚 Vos documents, à jour</h3><p>Ajoutez un PDF ou un fichier texte depuis le tableau de bord : l'assistant s'en sert immédiatement.</p></div>
+      <div class="f"><h3>🧾 Factures PDF → lignes</h3><p>Déposez une facture ou un devis fournisseur : fournisseur, date, HT, TVA, TTC extraits dans la feuille.</p></div>
+      <div class="f"><h3>🗂️ Tout est journalisé</h3><p>Chaque conversation est conservée avec les sources utilisées, le temps de réponse et son coût.</p></div>
+      <div class="f"><h3>🔌 Un script à coller</h3><p>Le widget s'installe sur n'importe quel site (WordPress, Shopify, site maison) avec une seule ligne.</p></div>
+      <div class="f"><h3>🛡️ Garde-fous</h3><p>Plafond de messages par conversation, limite par visiteur et budget journalier pour maîtriser la facture.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="cout">
+  <div class="wrap">
+    <div class="cost">
+      <div>
+        <h2>Combien ça coûte à faire tourner ?</h2>
+        <p>Mesuré sur les vraies conversations de cette démo : chaque réponse enregistre les tokens consommés et
+          leur prix. Hébergement non compris.</p>
+        <br>
+        <div class="big" id="c-big">–<small> TND</small></div>
+        <p>pour 1 000 conversations, l'activité d'un mois pour beaucoup de PME</p>
+        <p id="c-free" hidden>Cette démo tourne sur l'offre gratuite de Gemini : aujourd'hui elle ne coûte rien.
+          Les chiffres sont ceux du tarif payant, celui d'un client en production (sans quota, et ses
+          conversations ne servent pas à entraîner les modèles de Google).</p>
+      </div>
+      <ul id="c-detail">
+        <li><span>Modèle</span><b id="c-model">–</b></li>
+        <li><span>Coût moyen d'une conversation</span><b id="c-conv">–</b></li>
+        <li><span>Pour 1 000 conversations</span><b id="c-usd">–</b></li>
+        <li><span>Conversations mesurées</span><b id="c-n">–</b></li>
+        <li><span>Taux de change utilisé</span><b id="c-fx">–</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>La technique</h2>
+    <p class="sub">Une API Python propre, testée et déployable en une commande.</p>
+    <div class="stack"><span>Python 3.12</span><span>FastAPI</span><span>OpenAI API</span><span>PostgreSQL + pgvector</span><span>n8n</span><span>Google Sheets API</span><span>WhatsApp Cloud API</span><span>SMTP</span><span>Docker</span><span>Vercel + Neon</span><span>pytest</span></div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>Projet de portfolio · les deux entreprises sont fictives.</span><span><a href="/docs">API</a> · <a href="https://github.com/MedAmine-SUDO/ai-customer-assistant">Code source</a></span></div></footer>
+
+<script>
+  const fmt = (n, d = 2) => Number(n).toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d });
+  fetch("/api/v1/stats").then((r) => r.json()).then((s) => {
+    const has = s.conversations_measured > 0;
+    document.getElementById("s-time").textContent = has ? fmt(s.median_answer_seconds, 1) + " s" : "–";
+    document.getElementById("s-cost").textContent = has ? "~" + fmt(s.cost_per_1000_conversations_tnd, 1) + " TND" : "–";
+    document.getElementById("s-conv").textContent = s.conversations_measured.toLocaleString("fr-FR");
+    document.getElementById("c-big").firstChild.textContent = has ? "~" + fmt(s.cost_per_1000_conversations_tnd, 1) : "–";
+    document.getElementById("c-model").textContent = s.model;
+    document.getElementById("c-free").hidden = !s.free_tier;
+    document.getElementById("c-conv").textContent = has ? fmt(s.avg_cost_per_conversation_usd, 4) + " $" : "–";
+    document.getElementById("c-usd").textContent = has ? fmt(s.cost_per_1000_conversations_usd) + " $" : "–";
+    document.getElementById("c-n").textContent = s.conversations_measured;
+    document.getElementById("c-fx").textContent = "1 $ = " + fmt(s.usd_to_tnd) + " TND";
+  }).catch(() => {});
+  fetch("/api/v1/config").then((r) => r.json()).then((c) => {
+    const link = (id, url) => { if (url) { const a = document.getElementById(id); a.href = url; a.removeAttribute("aria-disabled"); } };
+    link("sheet", c.sheet_url);
+    for (const [slug, url] of Object.entries(c.whatsapp || {})) link("wa-" + slug, url);
+    if (c.admin_password) document.getElementById("pwd").textContent = " · mot de passe : " + c.admin_password;
+  }).catch(() => {});
+</script>
+</body>
+</html>
