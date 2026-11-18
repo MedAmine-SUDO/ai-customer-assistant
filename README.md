@@ -26,7 +26,7 @@ workflow follows up 24 hours later.
 ![Google Sheets](https://img.shields.io/badge/Google_Sheets-API-34A853?logo=googlesheets&logoColor=white)
 ![WhatsApp](https://img.shields.io/badge/WhatsApp-Cloud_API-25D366?logo=whatsapp&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white)
-![pytest](https://img.shields.io/badge/tests-67_passing-0A9EDC?logo=pytest&logoColor=white)
+![pytest](https://img.shields.io/badge/tests-75_passing-0A9EDC?logo=pytest&logoColor=white)
 
 <br/>
 
@@ -204,7 +204,7 @@ knowledge/               the businesses' own documents, in Markdown
 frontend/                widget.js, the two demo websites, the hub, the dashboard (no build step)
 n8n/                     the workflow, ready to import, and Mailpit's SMTP credential
 samples/                 three fictional supplier invoices and quotes to try the extraction
-tests/                   67 tests on PostgreSQL + pgvector, with the mock LLM
+tests/                   75 tests on PostgreSQL + pgvector, with the mock LLM
 ```
 
 <br/>
@@ -343,7 +343,7 @@ The mock LLM passed every test; these only showed up against Gemini's real API.
 
 | | |
 | --- | --- |
-| 🧪 **Tests** | 67 pytest tests on PostgreSQL + pgvector: retrieval scoped per business, lead capture and correction, phone validation, handoff and takeover, each lead destination, the n8n payload and callback (and its retry), signed WhatsApp webhooks and the 24-hour window, PDF extraction, limits, demo reset, masking, language detection, provider fallback |
+| 🧪 **Tests** | 75 pytest tests on PostgreSQL + pgvector: retrieval scoped per business, lead capture and correction, phone validation, handoff and takeover, each lead destination, the n8n payload and callback (and its retry), signed WhatsApp webhooks and the 24-hour window, PDF extraction, limits, demo reset, masking, language detection, provider fallback, spreadsheet formula escaping |
 | 🤖 **No key in CI** | A mock LLM with the same interface (hashed embeddings, scripted tool calls) makes the tests deterministic and free |
 | 🔁 **CI** | GitHub Actions: lint, migrations up / `alembic check` / down, tests, `docker compose` smoke test, then migrations and embeddings on the production database |
 | 🛡️ **Public demo safety** | Message and conversation caps, a daily budget, IPs stored only as a daily salted hash, phone numbers masked, 48-hour retention |
