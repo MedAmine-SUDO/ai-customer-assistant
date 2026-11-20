@@ -286,9 +286,25 @@ these.
    Basic**), any random `WHATSAPP_VERIFY_TOKEN`, and `WHATSAPP_DISPLAY_NUMBER` for the demo page's links.
 3. **WhatsApp → Configuration → Webhook:** URL `https://your-host/whatsapp/webhook`, the same verify
    token, then subscribe to **messages**. The app checks Meta's signature on every call.
-4. Optional: create a *utility* template such as *« Bonjour {{1}}, ici {{2}}. Suite à votre demande
+4. Link your WhatsApp Business account to your app, or Meta keeps real messages for its own test app
+   and only the dashboard's **Test** button reaches you. The account ID is on **API Setup**:
+   ```bash
+   curl -X POST "https://graph.facebook.com/v23.0/<WHATSAPP_BUSINESS_ACCOUNT_ID>/subscribed_apps" \
+     -H "Authorization: Bearer $WHATSAPP_ACCESS_TOKEN"
+   # check: a GET on the same URL lists your app
+   ```
+5. Optional: create a *utility* template such as *« Bonjour {{1}}, ici {{2}}. Suite à votre demande
    d'hier, souhaitez-vous qu'on en parle ? »* and set `WHATSAPP_FOLLOWUP_TEMPLATE` to its name. It's
    used for follow-ups once the 24-hour window has closed.
+
+If it doesn't answer, look at the function logs:
+
+| What you see | Why | Fix |
+| --- | --- | --- |
+| No `POST /whatsapp/webhook` when you send a message | Your app isn't subscribed to the business account, or **messages** isn't subscribed | Step 4, then step 3 |
+| `(#131030) Recipient phone number not in allowed list` | The test number only writes to the phones on its list (the dashboard's **Test** button uses a fake sender, so it always gets this) | Add and confirm the phone on **API Setup** |
+| `401 Bad signature` | `WHATSAPP_APP_SECRET` is wrong | Copy it again from **App settings → Basic** |
+| Worked yesterday, fails today | The temporary token lasts about a day | Use a system-user token |
 
 </details>
 
