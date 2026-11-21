@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "AI customer assistant: answers from your own documents in FR/EN/AR, captures leads to Google Sheets, n8n follow-ups."
 readme = "README.md"
 authors = [
-    { name = "Mohamed Amine", email = "medaminebenafia@hotmail.com" }
+    { name = "Mohamed Amine", email = "benafiamohamedamine@gmail.com" }
 ]
 requires-python = ">=3.12"
 dependencies = [
