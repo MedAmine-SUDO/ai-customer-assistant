@@ -65,7 +65,7 @@
     @keyframes pop { from { opacity: 0; transform: translateY(12px) scale(.98); } }
     @media (max-width: 480px) { .panel { right: 0; bottom: 0; width: 100vw; height: 100dvh; border-radius: 0; } }
     header { background: ${color}; color: #fff; padding: 14px 14px 12px 16px; display: flex; align-items: center; gap: 12px; }
-    .avatar { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,.2); display: grid; place-items: center; font-weight: 700; }
+    .avatar { width: 38px; height: 38px; border-radius: 50%; background: rgba(0,0,0,.22); display: grid; place-items: center; font-weight: 700; }
     .title { flex: 1; min-width: 0; }
     .title b { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .title small { font-size: 12px; opacity: .9; display: flex; align-items: center; gap: 6px; }
@@ -74,7 +74,7 @@
     .icon-btn:hover { background: rgba(255,255,255,.15); }
     .langs { display: flex; gap: 2px; }
     .langs button { background: transparent; border: 0; color: #fff; opacity: .65; cursor: pointer; font-size: 12px; font-weight: 600; padding: 4px 6px; border-radius: 6px; }
-    .langs button.on { opacity: 1; background: rgba(255,255,255,.2); }
+    .langs button.on { opacity: 1; background: rgba(0,0,0,.22); }
     .msgs { flex: 1; overflow-y: auto; padding: 16px; background: #f6f7f9; display: flex; flex-direction: column; gap: 10px; }
     .row { display: flex; flex-direction: column; max-width: 85%; }
     .row.user { align-self: flex-end; align-items: flex-end; }
@@ -268,6 +268,8 @@
 
   function open() { panel.classList.add("open"); $(".launcher").style.display = "none"; input.focus(); }
   function close() { panel.classList.remove("open"); $(".launcher").style.display = ""; }
+  // Escape closes the chat and gives the keyboard focus back to the launcher.
+  panel.addEventListener("keydown", (e) => { if (e.key === "Escape") { close(); $(".launcher").focus(); } });
 
   $(".launcher").onclick = open;
   $(".close").onclick = close;
