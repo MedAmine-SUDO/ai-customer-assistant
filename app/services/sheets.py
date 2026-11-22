@@ -3,7 +3,9 @@
 import json
 import logging
 import time
+from datetime import datetime
 from urllib.parse import quote
+from zoneinfo import ZoneInfo
 
 import httpx
 import jwt
@@ -143,3 +145,62 @@ def append_row(tab: str, row: list) -> bool:
     except (httpx.HTTPError, KeyError, ValueError) as exc:
         log.warning("Google Sheets append to %s failed: %s", tab, exc)
         return False
+
+
+def old_row_indexes(dates: list[list[str]], cutoff: datetime) -> list[int]:
+    """0-based sheet row indexes (header = 0) whose first cell, a "dd/mm/YYYY HH:MM" local time,
+    is before the cutoff. Rows with an unreadable date are kept."""
+    tz = ZoneInfo(settings.timezone)
+    old = []
+    for i, row in enumerate(dates, start=1):
+        try:
+            when = datetime.strptime((row or [""])[0], "%d/%m/%Y %H:%M").replace(tzinfo=tz)
+        except ValueError:
+            continue
+        if when < cutoff:
+            old.append(i)
+    return old
+
+
+def prune(tab: str, cutoff: datetime) -> int:
+    """Delete the tab's rows older than the cutoff (the public demo keeps visitors' data 48 h).
+    Returns how many rows were deleted; 0 when Sheets isn't configured or the call fails."""
+    if not enabled():
+        return 0
+    try:
+        with httpx.Client(timeout=15) as client:
+            headers = {"Authorization": f"Bearer {_access_token(client)}"}
+            sheet_id = settings.google_sheet_id
+            meta = client.get(f"{API}/{sheet_id}", params={"fields": "sheets.properties"}, headers=headers)
+            meta.raise_for_status()
+            tab_id = next(
+                (
+                    s["properties"]["sheetId"]
+                    for s in meta.json().get("sheets", [])
+                    if s["properties"]["title"] == tab
+                ),
+                None,
+            )
+            if tab_id is None:
+                return 0
+            col = client.get(f"{API}/{sheet_id}/values/{quote(tab)}!A2:A", headers=headers)
+            col.raise_for_status()
+            rows = old_row_indexes(col.json().get("values", []), cutoff)
+            if not rows:
+                return 0
+            # Bottom-up, so earlier deletions don't shift the rows still to delete.
+            requests = [
+                {
+                    "deleteDimension": {
+                        "range": {"sheetId": tab_id, "dimension": "ROWS", "startIndex": i, "endIndex": i + 1}
+                    }
+                }
+                for i in sorted(rows, reverse=True)
+            ]
+            client.post(
+                f"{API}/{sheet_id}:batchUpdate", json={"requests": requests}, headers=headers
+            ).raise_for_status()
+            return len(rows)
+    except (httpx.HTTPError, KeyError, ValueError) as exc:
+        log.warning("Google Sheets prune of %s failed: %s", tab, exc)
+        return 0

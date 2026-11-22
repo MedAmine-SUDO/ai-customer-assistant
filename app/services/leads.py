@@ -55,6 +55,22 @@ def mask_phone(phone: str) -> str:
     return phone[:7] + re.sub(r"\d", "•", phone[7:-3]) + phone[-3:]
 
 
+def mask_email(email: str | None) -> str | None:
+    """For the public demo sheet: "sarah.b@gmail.com" becomes "sa•••@gmail.com"."""
+    if not email or not settings.demo_mode or "@" not in email:
+        return email
+    user, domain = email.split("@", 1)
+    return user[:2] + "•••@" + domain
+
+
+def mask_name(name: str) -> str:
+    """For the public demo sheet: "Ines Trabelsi" becomes "Ines T."."""
+    parts = name.split()
+    if not settings.demo_mode or len(parts) < 2:
+        return name
+    return f"{parts[0]} {parts[1][0]}."
+
+
 PHONE_IN_TEXT = re.compile(r"(?<!\d)(?:\+|00)?(?:\d[\s.-]?){7,14}\d(?!\d)")
 
 
@@ -194,9 +210,9 @@ def dispatch(db: Session, lead: Lead) -> None:
             [
                 local_time(lead),
                 tenant.name,
-                lead.name,
+                mask_name(lead.name),
                 mask_phone(lead.phone),
-                lead.email,
+                mask_email(lead.email),
                 lead.need,
                 lead.preferred_time,
                 lead.language.upper(),

@@ -66,6 +66,7 @@ def test_lead_is_captured_and_sent_to_sheet_and_team(client, db, outbox):
     [(tab, row)] = outbox["sheets"]
     assert tab == "Leads"
     assert row[1] == "Cabinet Dentaire Sahel Sourire"
+    assert row[2] == "Ines T."  # the public demo sheet shows a first name and an initial
     assert row[3] == "+216 22 ••• 678"  # masked on the public demo
     [(to, subject, body)] = outbox["email"]
     assert to == ["ventes@example.tn"] and subject.startswith("Nouveau lead : Ines Trabelsi")

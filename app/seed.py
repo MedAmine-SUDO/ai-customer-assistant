@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from app.db import SessionLocal, utcnow
 from app.models import Conversation, ExtractedDocument, Lead, Message
+from app.services import sheets
 from app.services.knowledge import ingest_all
 
 log = logging.getLogger(__name__)
@@ -166,9 +167,12 @@ def reset(db: Session) -> dict:
     docs = db.execute(delete(ExtractedDocument).where(ExtractedDocument.created_at < cutoff)).rowcount
     db.execute(delete(Conversation).where(Conversation.client_key == SEED_KEY))
     db.commit()
+    # The public sheet shows the same visitors' leads and invoices: same 48 h.
+    sheet_rows = sheets.prune("Leads", cutoff) + sheets.prune("Factures", cutoff)
     return {
         "conversations_deleted": old,
         "extractions_deleted": docs,
+        "sheet_rows_deleted": sheet_rows,
         "documents_embedded": ingest_all(db),
         "examples": seed_examples(db),
     }

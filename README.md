@@ -26,7 +26,7 @@ workflow follows up 24 hours later.
 ![Google Sheets](https://img.shields.io/badge/Google_Sheets-API-34A853?logo=googlesheets&logoColor=white)
 ![WhatsApp](https://img.shields.io/badge/WhatsApp-Cloud_API-25D366?logo=whatsapp&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white)
-![pytest](https://img.shields.io/badge/tests-75_passing-0A9EDC?logo=pytest&logoColor=white)
+![pytest](https://img.shields.io/badge/tests-76_passing-0A9EDC?logo=pytest&logoColor=white)
 
 <br/>
 
@@ -204,7 +204,7 @@ knowledge/               the businesses' own documents, in Markdown
 frontend/                widget.js, the two demo websites, the hub, the dashboard (no build step)
 n8n/                     the workflow, ready to import, and Mailpit's SMTP credential
 samples/                 three fictional supplier invoices and quotes to try the extraction
-tests/                   75 tests on PostgreSQL + pgvector, with the mock LLM
+tests/                   76 tests on PostgreSQL + pgvector, with the mock LLM
 ```
 
 <br/>

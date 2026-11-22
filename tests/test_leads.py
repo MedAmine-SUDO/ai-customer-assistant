@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import UTC, timedelta
 
 import pytest
 from sqlalchemy import select
@@ -136,3 +136,19 @@ def test_sheet_cells_never_run_as_formulas(value, expected):
     from app.services.sheets import cell
 
     assert cell(value) == expected
+
+
+def test_public_sheet_masks_and_pruning():
+    from datetime import datetime
+
+    from app.services import sheets
+    from app.services.leads import mask_email, mask_name
+
+    assert mask_email("sarah.b@gmail.com") == "sa•••@gmail.com"
+    assert mask_email(None) is None
+    assert mask_name("Ines Trabelsi") == "Ines T."
+    assert mask_name("Karim") == "Karim"
+    # Sheet rows (after the header) older than the cutoff are found; unreadable dates are kept.
+    dates = [["20/11/2026 10:00"], ["21/11/2026 09:00"], ["bad"], ["22/11/2026 12:00"]]
+    cutoff = datetime(2026, 11, 21, 12, 0, tzinfo=UTC)
+    assert sheets.old_row_indexes(dates, cutoff) == [1, 2]
