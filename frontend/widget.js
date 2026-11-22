@@ -73,7 +73,7 @@
     .icon-btn { background: transparent; border: 0; color: #fff; cursor: pointer; padding: 6px; border-radius: 8px; font-size: 13px; }
     .icon-btn:hover { background: rgba(255,255,255,.15); }
     .langs { display: flex; gap: 2px; }
-    .langs button { background: transparent; border: 0; color: #fff; opacity: .65; cursor: pointer; font-size: 12px; font-weight: 600; padding: 4px 6px; border-radius: 6px; }
+    .langs button { background: transparent; border: 0; color: #fff; opacity: .9; cursor: pointer; font-size: 12px; font-weight: 600; padding: 4px 6px; border-radius: 6px; }
     .langs button.on { opacity: 1; background: rgba(0,0,0,.22); }
     .msgs { flex: 1; overflow-y: auto; padding: 16px; background: #f6f7f9; display: flex; flex-direction: column; gap: 10px; }
     .row { display: flex; flex-direction: column; max-width: 85%; }
@@ -101,7 +101,7 @@
     textarea:focus { border-color: ${color}; box-shadow: 0 0 0 3px ${color}22; }
     form button { border: 0; background: ${color}; color: #fff; border-radius: 12px; width: 44px; cursor: pointer; display: grid; place-items: center; }
     form button:disabled { opacity: .5; cursor: default; }
-    .foot { font-size: 11px; color: #9ca3af; text-align: center; padding: 0 10px 8px; background: #fff; }
+    .foot { font-size: 11px; color: #6b7280; text-align: center; padding: 0 10px 8px; background: #fff; }
   </style>
   <button class="launcher" part="launcher" aria-label="Chat">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
